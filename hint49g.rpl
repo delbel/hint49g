@@ -32,8 +32,7 @@
         area error / 1 - SWAP / \->NUM
         memory MEM - 3 \->LIST 1 \->LIST
         quips SWAP AUGMENT 'quips' STO
-        IF xmid xlow - 1 > upper lower -
-        1 > AND THEN
+        IF xmid xlow - 1 > THEN
           xmid xlow yhigh ymid 4 \->LIST  @ Create the new queue items
           xhigh xmid ymid 1 + ylow
           4 \->LIST
