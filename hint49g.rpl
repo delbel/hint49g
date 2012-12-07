@@ -1,5 +1,13 @@
+@ HINT49G  - Implements the HINT benchmark described at http://hint.byu.edu/
+@
+@ INPUT:   - Number of bits to use for the area; must be at least 4 and even
+@            Experiments show that 22 is the largest usable number without
+@            exceeding available memory
+@ OUTPUTS: - List of time, QUIPS, and memory used lists
+@          - Net QUIPS value
+
 \<<
-  \-> bits                                @ Get the number of bits
+  \-> bits                                @ Get the number of bits for the area
   \<<
     DEPTH                                 @ Store the stack depth
     -105 FS?C                             @ Turn approx mode off
@@ -16,7 +24,7 @@
       2 bits 2 / ^ 'indices' STO
       indices 0 indices 0 4 \->LIST       @ Initialize the queue
       WHILE DEPTH depth > REPEAT
-        LIST\-> DROP
+        LIST\-> DROP                      @ Get the next item from the queue
         'ylow' STO 'yhigh' STO            @ Initialize the rectangle
         'xlow' STO 'xhigh' STO
         xhigh xlow + 2 / 'xmid' STO       @ Compute xmid
