@@ -1,0 +1,59 @@
+\<<
+  \-> bits                                @ Get the number of bits
+  \<<
+    DEPTH                                 @ Store the stack depth
+    -105 FS?C                             @ Turn approx mode off
+    0 0 0 0 0 0 0 0 0 0 0 0               @ Local variables
+    {}                                    @ Initialize the QUIPS values
+    TICKS                                 @ Initialize the counter
+    MEM                                   @ Initialize the memory usage
+    \-> depth approx area error indices
+      upper lower xlow xmid xhigh ylow
+      ymid yhigh net quips counter memory
+    \<<
+      2 bits ^ DUP DUP 'area' STO         @ Initialize the variables
+      'error' STO 'upper' STO
+      2 bits 2 / ^ 'indices' STO
+      indices 0 indices 0 4 \->LIST       @ Initialize the queue
+      WHILE DEPTH depth > REPEAT
+        LIST\-> DROP
+        'ylow' STO 'yhigh' STO            @ Initialize the rectangle
+        'xlow' STO 'xhigh' STO
+        xhigh xlow + 2 / 'xmid' STO       @ Compute xmid
+        xmid indices / DUP                @ Compute ymid
+        NEG 1 + SWAP 1 + /
+        indices * FLOOR 'ymid' STO
+        xhigh xmid - yhigh ymid 1 + - *   @ Compute the upper error removed
+        DUP upper SWAP - 'upper' STO      @ Update the upper bound
+        xmid xlow - ymid ylow - *         @ Compute the lower error removed
+        DUP lower + 'lower' STO           @ Update the lower bound
+        + error SWAP - 'error' STO        @ Update the total error
+        TICKS counter - B\->R 8192 / DUP  @ Record the QUIPS entry
+        area error / 1 - SWAP / \->NUM
+        memory MEM - 3 \->LIST 1 \->LIST
+        quips SWAP AUGMENT 'quips' STO
+        IF xmid xlow - 1 > upper lower -
+        1 > AND THEN
+          xmid xlow yhigh ymid 4 \->LIST  @ Create the new queue items
+          xhigh xmid ymid 1 + ylow
+          4 \->LIST
+          xmid xlow - yhigh ymid - *      @ Put the items in the correct order
+          xlow 0 > -
+          xhigh xmid - ymid 1 + ylow - *
+          xhigh indices < -
+          > 1 + ROLLD
+          DEPTH depth - ROLLD
+          DEPTH depth - ROLLD
+        END
+      END
+      quips                               @ Output the QUIPS data
+      1 quips SIZE 1 - FOR i
+        quips i GET 2 GET quips i GET 1
+        GET INV quips i 1 + GET 1 GET INV
+        - * net + 'net' STO
+      NEXT
+      net
+      IF approx THEN -105 SF END          @ Turn approx mode back on if needed
+    \>>
+  \>>
+\>>
