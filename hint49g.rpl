@@ -1,23 +1,22 @@
-@ HINT49G  - Implements the HINT benchmark described at http://hint.byu.edu/
+@ HINT49G - Implements the HINT benchmark described at http://hint.byu.edu/
 @
-@ INPUT:   - Number of bits to use for the area; must be at least 4 and even
-@            Experiments show that 22 is the largest usable number without
-@            exceeding available memory
-@ OUTPUTS: - List of time, QUIPS, and memory used lists
-@          - Net QUIPS value
+@ INPUT:  - Number of bits to use for the area; must be at least 4 and even
+@           Experiments show that 22 is the largest usable number without
+@           exceeding available memory
+@ OUTPUT: - List of time, QUIPS, and memory used lists
 
 \<<
   \-> bits                                @ Get the number of bits for the area
   \<<
     DEPTH                                 @ Store the stack depth
     -105 FS?C                             @ Turn approx mode off
-    0 0 0 0 0 0 0 0 0 0 0 0               @ Local variables
+    0 0 0 0 0 0 0 0 0 0 0                 @ Local variables
     {}                                    @ Initialize the QUIPS values
     TICKS                                 @ Initialize the counter
     MEM                                   @ Initialize the memory usage
     \-> depth approx area error indices
       upper lower xlow xmid xhigh ylow
-      ymid yhigh net quips counter memory
+      ymid yhigh quips counter memory
     \<<
       2 bits ^ DUP DUP 'area' STO         @ Initialize the variables
       'error' STO 'upper' STO
@@ -54,12 +53,6 @@
         END
       END
       quips                               @ Output the QUIPS data
-      1 quips SIZE 1 - FOR i
-        quips i GET 2 GET quips i GET 1
-        GET INV quips i 1 + GET 1 GET INV
-        - * net + 'net' STO
-      NEXT
-      net
       IF approx THEN -105 SF END          @ Turn approx mode back on if needed
     \>>
   \>>
